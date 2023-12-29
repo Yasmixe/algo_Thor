@@ -1,126 +1,75 @@
-# supprimer un element dans un tableau
-def supprimer(T, i):
-    T.pop(i)
+nb = int(input("entrez le nombre de vos taches : "))
+temps_exec = []
+for i in range(nb):
+    temps_exec.append(
+        int(input("Entrez le temps d'exécution de la tâche {}: ".format(i + 1)))
+    )
 
+print("gérez le tableau des transitions :")
+rows = []
+for i in range(nb):
+    col = []
+    for j in range(nb):
+        if j == i:
+            col.append(0)
+        else:
+            x = int(
+                input(
+                    "entrez la transition de la tache {} vers la tache {} : ".format(
+                        i + 1, j + 1
+                    )
+                )
+            )
+            col.append(x)
+    rows.append(col)
+print(rows)
+start = min(x for x in rows[0] if x != 0)
+index = rows[0].index(min(x for x in rows[0] if x != 0))
+chemin_hamilton = [start]
+ordonnancement = [1, index + 1]
+for j in range(1, nb - 1):
+    next = min(
+        rows[index][x]
+        for x in range(len(rows[index]))
+        if rows[index][x] != 0 and x + 1 not in ordonnancement
+    )
+    index = rows[index].index(
+        min(
+            rows[index][x]
+            for x in range(len(rows[index]))
+            if rows[index][x] != 0 and x + 1 not in ordonnancement
+        )
+    )
+    chemin_hamilton.append(next)
+    ordonnancement.append(index + 1)
+taille_chemin = sum(chemin_hamilton)
 
-# supprimer une ligne dans une matrice
-def supprimer_ligne(matrice, indice_ligne):
-    if 0 <= indice_ligne < len(matrice):
-        matrice.pop(indice_ligne)
-
-
-def supprimer_colonne(matrice, indice_colonne):
-    for row in matrice:
-        if 0 <= indice_colonne < len(row):
-            row.pop(indice_colonne)
-
-
-nb_taches = int(input("entrer le nombre de taches que vous avez: "))
-Ordre_taches = []
-cij = []
-p = []
-c = []
-
-for i in range(nb_taches):
-    row = []
-    for j in range(nb_taches):
-        transition_time = int(
-            input(
-                "donner le temps de transition entre les taches "
-                + str(i)
-                + " et "
-                + str(j)
-                + " : "
+for i in range(1, nb):
+    start = min(x for x in rows[i] if x != 0)
+    index = rows[i].index(min(x for x in rows[i] if x != 0))
+    chemin_hamilton_test = [start]
+    ordonnancement_test = [i + 1, index + 1]
+    for j in range(1, nb - 1):
+        next = min(
+            rows[index][x]
+            for x in range(len(rows[index]))
+            if rows[index][x] != 0 and x + 1 not in ordonnancement_test
+        )
+        index = rows[index].index(
+            min(
+                rows[index][x]
+                for x in range(len(rows[index]))
+                if rows[index][x] != 0 and x + 1 not in ordonnancement_test
             )
         )
-        row.append(transition_time)
-    cij.append(row)
-    pi = int(input("entrer la duree de la tache " + str(i) + " : "))
-    p.append(pi)
+        chemin_hamilton_test.append(next)
+        ordonnancement_test.append(index + 1)
+    taille = sum(chemin_hamilton_test)
+    if taille < taille_chemin:
+        taille_chemin = taille
+        chemin_hamilton = chemin_hamilton_test
+        ordonnancement = ordonnancement_test
 
 
-# display the array des pi
-print("Tableau des Pi:", p)
-
-
-# Display la matrice de transition
-print("Matrice des temps de transition:")
-for row in cij:
-    print(row)
-
-# Find the minimum value in the matrix
-min_indices_value = min(
-    (
-        (i, j, value)
-        for i, row in enumerate(cij)
-        for j, value in enumerate(row)
-        if i != j
-    ),
-    key=lambda x: x[2],
-)
-
-min_value = min_indices_value[2]
-min_indices = (min_indices_value[0], min_indices_value[1])
-
-print("Le temps de transition minimum est:", min_value)
-print("Les indices de la valeur minimale sont:", min_indices)
-
-si = 0
-cmax = p[min_indices[0]] + cij[min_indices[0]][min_indices[1]]
-c.append(cmax)
-Ordre_taches.append("T" + str(min_indices[1]))
-print("Ordre des taches: ")
-print(Ordre_taches)
-supprimer(p, min_indices[0])
-
-# supprimer la ligne I  et la colonne i de la matrice Cij
-supprimer_ligne(cij, min_indices[0])
-supprimer_colonne(cij, min_indices[0])
-
-for row in cij:
-    print(row)
-
-
-tasks_remaining = True
-minimum = min_indices[1]
-if len(p) > 2:
-    for i in range(nb_taches):
-        for j in range(nb_taches):
-            if tasks_remaining and cij and any(cij):
-                min_indices_value = min(
-                    (
-                        (i, j, value)
-                        for i, row in enumerate(cij)
-                        for j, value in enumerate(row)
-                        if i != j
-                    ),
-                    key=lambda x: x[2],
-                )
-                min_value = min_indices_value[2]
-                min_indices = (min_indices_value[0], min_indices_value[1])
-
-                sj = cmax
-                cmax = cmax + p[min_indices[0]] + cij[min_indices[0]][min_indices[1]]
-                c.append(cmax)
-                Ordre_taches.append("T" + str(min_indices[1]))
-                print("Ordre des taches: ")
-                print(Ordre_taches)
-                minimum = min_indices[1]
-                supprimer(p, min_indices[0])
-                supprimer_ligne(cij, min_indices[0])
-                supprimer_colonne(cij, min_indices[0])
-            else:
-                tasks_remaining = False
-                break
-
-        if not tasks_remaining:
-            break
-
-
-sj = cmax
-cmax = sj + p[min_indices[0]]
-Ordre_taches.append("T" + str(min_indices[1] + 1))
-print("Ordre des taches: ")
-print(Ordre_taches)
-c.append(cmax)
-print(c)
+print("l'ordonnancement est :", ordonnancement)
+print("Cmax= ", sum(chemin_hamilton) + sum(temps_exec))
