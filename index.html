@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Hamiltonian Path Calculator</title>
+   
+</head>
+<body>
+    <h1>Set-up Cmax Calculator</h1>
+    <div class="wrapper">
+       
+    
+    <form>
+        <label for="nbTasks">Number of tasks:</label>
+        <input type="number" id="nbTasks" required>
+        <button type="button" onclick="addInputFields()">Add Input Fields</button>
+        <div id="inputFields"></div>
+<!-- Input fields for transition matrix -->
+
+<!-- Add this line to define an element to hold the transition matrix -->
+<div id="transitionMatrix"></div>
+        <button type="button" onclick="calculateHamiltonianPath()">Calculate</button>
+
+    </form>
+
+    <div id="results" class="hidden">
+        <h2>Results:</h2>
+        <p id="ordonnancementResult"></p>
+        <p id="cmaxResult"></p>
+    </div>
+
+    </div>
+   
+    
+
+<script src="hamiltonien.js"></script>
+</body>
+</html>

@@ -23,6 +23,7 @@ for i in range(nb):
             col.append(x)
     rows.append(col)
 print(rows)
+
 start = min(x for x in rows[0] if x != 0)
 index = rows[0].index(min(x for x in rows[0] if x != 0))
 chemin_hamilton = [start]
